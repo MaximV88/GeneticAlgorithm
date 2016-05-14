@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <list>
+#include <memory>
 class Chromosome;
 
 class Fitness {
@@ -20,8 +21,8 @@ public:
     /**
      * Types of Fitness calculations that are available.
      */
-    enum class Type {
-        kEditDistance,
+    enum Type {
+        kEditDistance = 1,
         kCloseness
     };
     

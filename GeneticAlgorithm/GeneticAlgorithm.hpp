@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <memory>
 #include "Chromosome.hpp"
 #include "Fitness.hpp"
 

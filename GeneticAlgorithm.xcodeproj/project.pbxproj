@@ -43,6 +43,7 @@
 		94D96DEE1CE764CB002DCBFF /* EditDistanceFitness.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EditDistanceFitness.hpp; sourceTree = "<group>"; };
 		94D96DF01CE77BD7002DCBFF /* ClosenessFitness.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClosenessFitness.cpp; sourceTree = "<group>"; };
 		94D96DF11CE77BD7002DCBFF /* ClosenessFitness.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ClosenessFitness.hpp; sourceTree = "<group>"; };
+		94D96DF31CE7B05A002DCBFF /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = makefile; path = GeneticAlgorithm/makefile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +60,7 @@
 		94D96DC71CE65FBE002DCBFF = {
 			isa = PBXGroup;
 			children = (
+				94D96DF31CE7B05A002DCBFF /* makefile */,
 				94D96DD21CE65FBE002DCBFF /* GeneticAlgorithm */,
 				94D96DD11CE65FBE002DCBFF /* Products */,
 			);
@@ -253,6 +255,7 @@
 		94D96DD81CE65FBE002DCBFF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -260,6 +263,7 @@
 		94D96DD91CE65FBE002DCBFF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

@@ -10,6 +10,7 @@
 #define Chromosome_hpp
 #include <map>
 #include <list>
+#include <string>
 
 class Chromosome {
 public:
