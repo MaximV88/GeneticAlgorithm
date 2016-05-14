@@ -15,6 +15,8 @@ Fitness(query)
 
 size_t EditDistanceFitness::ResolveScore(const std::string& estimated_result, const std::string& real_result) const {
     
+    if (estimated_result.length() != real_result.length()) return 0;
+    
     const std::size_t len1 = estimated_result.size(), len2 = real_result.size();
     std::vector<std::vector<size_t>> d(len1 + 1, std::vector<size_t>(len2 + 1));
     
@@ -34,8 +36,8 @@ size_t EditDistanceFitness::ResolveScore(const std::string& estimated_result, co
         }
     }
     
-    return d[len1][len2];
-
+    //Less matches mean lower scores -> high matches high scores
+    return real_result.length() - d[len1][len2];
 }
 
 size_t EditDistanceFitness::ResolveOptimalScore(const std::string &result) const {

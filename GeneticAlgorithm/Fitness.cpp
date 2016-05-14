@@ -97,7 +97,7 @@ size_t Fitness::Score(const Chromosome &chromosome) const {
     for (const auto& estimated_result : estimated_results)
         scores.push_back(ResolveScore(estimated_result, m_result));
         
-    return static_cast<int>(OptimalScore() - *std::min_element(scores.begin(), scores.end()));
+    return static_cast<int>(*std::max_element(scores.begin(), scores.end()));
 }
 
 size_t Fitness::OptimalScore() const { return ResolveOptimalScore(m_result); }

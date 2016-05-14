@@ -43,10 +43,10 @@ protected:
      * Types of mathematical operations that can be performed.
      */
     enum Operation {
-        kAddition = '+',
-        kSubtraction = '-',
+        kAddition       = '+',
+        kSubtraction    = '-',
         kMultiplication = '*',
-        kDevision = '/',
+        kDevision       = '/',
         kNone
     };
     
@@ -81,9 +81,7 @@ protected:
      * @param query     The query that the fitness needs to perform on.
      */
     void Interpret(const std::string& query);
-    
-    
-    
+
 private:
     
     ///Contains all the operations that are to be made.
@@ -94,8 +92,6 @@ private:
     
     ///Stores the final result.
     std::string m_result;
-
-    
 };
 
 #endif /* Fitness_hpp */
