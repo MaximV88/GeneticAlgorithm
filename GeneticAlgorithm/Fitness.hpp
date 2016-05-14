@@ -56,6 +56,11 @@ public:
      */
     virtual bool Descending() const = 0;
     
+    /**
+     * Destructur.
+     */
+    virtual ~Fitness();
+    
 protected:
     
     /**
@@ -96,22 +101,9 @@ protected:
 
 private:
     
-    /**
-     * Parses the input query into managable pieces of information,
-     * populates member variables.
-     *
-     * @param query     The query that the fitness needs to perform on.
-     */
-    void Interpret(const std::string& query);
+    class Impl;
+    std::unique_ptr<Impl> m_pimpl;
     
-    ///Contains all the operations that are to be made.
-    std::vector<Operation> m_operations;
-    
-    ///Contains all the parameters that the operations are performed on.
-    std::vector<std::string> m_parameters;
-    
-    ///Stores the final result.
-    std::string m_result;
 };
 
 #endif /* Fitness_hpp */

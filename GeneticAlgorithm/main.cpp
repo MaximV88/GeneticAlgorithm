@@ -17,9 +17,9 @@ int main(int argc, const char * argv[]) {
     //Use current time as seed for random generator
     std::srand((unsigned)std::time(0));
     
-    GeneticAlgorithm algorithm(100, 0.5, 0.5);
+    GeneticAlgorithm algorithm(100, 0.5, 0.01);
     
-    std::cout << algorithm.FindSolution("ABCD*DCBA=XCCBAAD", Fitness::Type::kEditDistance, 0) << std::endl;
+    std::cout << algorithm.FindSolution("SEND+MORE=MONEY", Fitness::Type::kCloseness, 0) << std::endl;
 
     return 0;
 }

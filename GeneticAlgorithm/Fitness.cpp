@@ -11,21 +11,69 @@
 #include "ClosenessFitness.hpp"
 #include "Chromosome.hpp"
 
-Fitness* Fitness::CreateFitness(const std::string& query, Fitness::Type type) {
+/**
+ * Implementation.
+ */
+class Fitness::Impl {
+public:
     
-    switch (type) {
-        case Type::kEditDistance:   return new EditDistanceFitness(query);
-        case Type::kCloseness:      return new ClosenessFitness(query);
-    }
-}
+    /**
+     * Constructor.
+     *
+     * @param query     The query that the fitness is based on.
+     * @param parent    The parent of the implementation.
+     */
+    Impl(const std::string& query, Fitness& parent);
+    
+    /**
+     * Calculates the score of the chromosome.
+     *
+     * @param chromosome    The chromosome to calculate the score for.
+     * @return              Score of input chromosome.
+     */
+    size_t Score(const Chromosome& chromosome) const;
+    
+    /**
+     * Calculates the optimal score for best possible chromosome.
+     *
+     * @return  Score of the perfect chromosome.
+     */
+    size_t OptimalScore() const;
 
-Fitness::Fitness(const std::string& query) {
+private:
+    
+    /**
+     * Parses the input query into managable pieces of information,
+     * populates member variables.
+     *
+     * @param query     The query that the fitness needs to perform on.
+     */
+    void Interpret(const std::string& query);
+    
+    ///Reference to the parent of the implementation.
+    Fitness& m_parent;
+    
+    ///Contains all the operations that are to be made.
+    std::vector<Operation> m_operations;
+    
+    ///Contains all the parameters that the operations are performed on.
+    std::vector<std::string> m_parameters;
+    
+    ///Stores the final result.
+    std::string m_result;
+    
+};
+
+#pragma mark - Implementation functions
+
+Fitness::Impl::Impl(const std::string& query, Fitness& parent) :
+m_parent(parent) {
     
     //Populate the parameters and result strings
     Interpret(query);
 }
 
-void Fitness::Interpret(const std::string &query) {
+void Fitness::Impl::Interpret(const std::string &query) {
     
     //Get the parameters from the query
     std::string::size_type last_paramter_end = 0;
@@ -56,7 +104,7 @@ void Fitness::Interpret(const std::string &query) {
     }
 }
 
-size_t Fitness::Score(const Chromosome &chromosome) const {
+size_t Fitness::Impl::Score(const Chromosome &chromosome) const {
     
     //First find the result using the chromosome's interpretation of the string
     int total_value = 0;
@@ -80,7 +128,7 @@ size_t Fitness::Score(const Chromosome &chromosome) const {
                 
                 size_t denominator = chromosome.Decode(*next_parameter);
                 
-                //Devision by 0 is illigal
+                //Devision by 0 is illigal - possible for single length parameters
                 if (denominator == 0)
                     throw std::runtime_error("Chromosome contains illigal numbers placement that results in devision by 0");
                 
@@ -102,9 +150,33 @@ size_t Fitness::Score(const Chromosome &chromosome) const {
     scores.reserve(estimated_results.size());
     
     for (const auto& estimated_result : estimated_results)
-        scores.push_back(ResolveScore(estimated_result, m_result, chromosome));
+        scores.push_back(m_parent.ResolveScore(estimated_result, m_result, chromosome));
         
     return static_cast<int>(*std::max_element(scores.begin(), scores.end()));
 }
 
-size_t Fitness::OptimalScore() const { return ResolveOptimalScore(m_result); }
+size_t Fitness::Impl::OptimalScore() const { return m_parent.ResolveOptimalScore(m_result); }
+
+#pragma mark - Fitness functions
+
+Fitness* Fitness::CreateFitness(const std::string& query, Fitness::Type type) {
+    
+    switch (type) {
+        case Type::kEditDistance:   return new EditDistanceFitness(query);
+        case Type::kCloseness:      return new ClosenessFitness(query);
+    }
+}
+
+Fitness::Fitness(const std::string& query) :
+m_pimpl(new Impl(query, *this))
+{ }
+
+Fitness::~Fitness() { }
+
+size_t Fitness::Score(const Chromosome &chromosome) const {
+    return m_pimpl->Score(chromosome);
+}
+
+size_t Fitness::OptimalScore() const {
+    return m_pimpl->OptimalScore();
+}

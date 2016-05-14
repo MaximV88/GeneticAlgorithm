@@ -35,16 +35,88 @@ size_t FindValidScoreOrReplace(const Fitness& fitness, Chromosome& chromosome, c
     return score;
 }
 
-Chromosome* UpdateChromosomeScores(std::vector<GeneticAlgorithm::scored_chromosome>& chromosomes,
-                                   const Fitness& fitness,
-                                   const std::string alphabet) {
+/**
+ * Implementation.
+ */
+class GeneticAlgorithm::Impl {
+public:
+    
+    typedef std::pair<Chromosome, size_t> scored_chromosome;
+
+    /**
+     *
+     * @param population_size           says how many chromosomes are in population (in one generation).
+     *                                  If there are too few chromosomes, GA have a few possibilities to
+     *                                  perform crossover and only a small part of search space is explored.
+     *
+     * @param crossover_probability     says how often will be crossover performed.
+     *                                  If there is no crossover, offspring is exact copy of parents.
+     *                                  If there is a crossover, offspring is made
+     *                                  from parts of parents' chromosome.
+     *
+     * @param mutation_probability      says how often will be parts of chromosome mutated.
+     *                                  If there is no mutation, offspring is taken after crossover (or copy)
+     *                                  without any change. If mutation is performed,
+     *                                  part of chromosome is changed.
+     *
+     */
+    Impl(size_t population_size, float crossover_probability, float mutation_probability);
+    
+    /**
+     * Finds the best solution to the query at the given number of generations.
+     *
+     * @param query         The query string.
+     * @param type          The type of fitness to use.
+     * @param generations   Number of generations to perform.
+     */
+    Chromosome FindSolution(const std::string& query, Fitness::Type type, size_t generations);
+
+private:
+    
+    /**
+     * Updates the chromosomes that are contained in member variables using the input 
+     * fitness object. The function iterates over all the chromosomes and updates it's
+     * scores (or replaces invalid chromosomes). If an optimal chromosome is found it 
+     * returns it.
+     *
+     * @param fitness   The fitness to use for score calculation.
+     * @return          The location to the optimal chromosome in member variables.
+     */
+    Chromosome* UpdateChromosomeScores(const Fitness& fitness);
+    
+    ///Contains all of the chromosomes that are paired to a score.
+    std::vector<scored_chromosome> m_chromosomes;
+    
+    ///Stores the population size.
+    size_t m_population_size;
+    
+    ///Stores the probability to perform a crossover.
+    float m_crossover_probability;
+    
+    ///Stores the probability to perform a mutation.
+    float m_mutation_probability;
+    
+    std::string m_alphabet;
+};
+
+#pragma mark - Implementation functions
+
+GeneticAlgorithm::Impl::Impl(size_t population_size,
+                             float crossover_probability,
+                             float mutation_probability) :
+m_population_size(population_size),
+m_crossover_probability(crossover_probability),
+m_mutation_probability(mutation_probability)
+{ }
+
+Chromosome* GeneticAlgorithm::Impl::UpdateChromosomeScores(const Fitness& fitness) {
     
     //Update Chromosomes so they contain valid chromosomes with scores
-    for (auto begin = chromosomes.begin(), end = chromosomes.end() ;
+    for (auto begin = m_chromosomes.begin(), end = m_chromosomes.end() ;
          begin != end ;
          begin++) {
         
-        begin->second = FindValidScoreOrReplace(fitness, begin->first, alphabet);
+        begin->second = FindValidScoreOrReplace(fitness, begin->first, m_alphabet);
         
         //Check for valid results
         if (begin->second == fitness.OptimalScore())
@@ -55,15 +127,7 @@ Chromosome* UpdateChromosomeScores(std::vector<GeneticAlgorithm::scored_chromoso
     return NULL;
 }
 
-GeneticAlgorithm::GeneticAlgorithm(size_t population_size,
-                                   float crossover_probability,
-                                   float mutation_probability) :
-m_population_size(population_size),
-m_crossover_probability(crossover_probability),
-m_mutation_probability(mutation_probability)
-{ }
-
-Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Type type, size_t generations) {
+Chromosome GeneticAlgorithm::Impl::FindSolution(const std::string& query, Fitness::Type type, size_t generations) {
 
     m_alphabet = utility::Alphabet(query);
     
@@ -84,7 +148,7 @@ Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Typ
     while (true) {
         
         
-        Chromosome* result = UpdateChromosomeScores(m_chromosomes, *fitness, m_alphabet);
+        Chromosome* result = UpdateChromosomeScores(*fitness);
         
         //In case a result was found return it
         if (result) {
@@ -104,7 +168,7 @@ Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Typ
         //Reached limit of generations
         if (counted_generations++ == generations) {
             
-            std::cout << "Generations: " << counted_generations << '\n';
+            std::cout << "Generations: " << counted_generations - 1 << '\n';
             return m_chromosomes.begin()->first;
         }
         
@@ -160,3 +224,16 @@ Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Typ
         }
     }
 }
+
+#pragma mark - GeneticAlgorithm functions
+
+GeneticAlgorithm::GeneticAlgorithm(size_t population_size, float crossover_probability, float mutation_probability) :
+m_pimpl(new Impl(population_size, crossover_probability, mutation_probability))
+{ }
+
+Chromosome GeneticAlgorithm::FindSolution(const std::string &query, Fitness::Type type, size_t generations) {
+    return m_pimpl->FindSolution(query, type, generations);
+}
+
+GeneticAlgorithm::~GeneticAlgorithm() { }
+

@@ -16,8 +16,6 @@
 
 class GeneticAlgorithm {
 public:
-
-    typedef std::pair<Chromosome, size_t> scored_chromosome;
     
     /**
      *
@@ -44,19 +42,22 @@ public:
      * Finds the best solution to the query at the given number of generations.
      *
      * @param query         The query string.
+     * @param type          The type of fitness to use.
      * @param generations   Number of generations to perform.
      */
-    Chromosome FindSolution(const std::string& query, Fitness::Type type, size_t generations = 0);
+    Chromosome FindSolution(const std::string& query,
+                            Fitness::Type type,
+                            size_t generations = 0);
+    
+    /**
+     * Destructor.
+     */
+    ~GeneticAlgorithm();
     
 private:
     
-    std::vector<scored_chromosome> m_chromosomes;
-    
-    size_t m_population_size;
-    float m_crossover_probability;
-    float m_mutation_probability;
-    
-    std::string m_alphabet;
+    class Impl;
+    std::unique_ptr<Impl> m_pimpl;
     
 };
 #endif /* GeneticAlgorithm_hpp */
