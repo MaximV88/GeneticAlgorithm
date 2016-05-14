@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		94D96DD41CE65FBE002DCBFF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D96DD31CE65FBE002DCBFF /* main.cpp */; };
+		94D96DDC1CE65FF0002DCBFF /* Fitness.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D96DDA1CE65FF0002DCBFF /* Fitness.cpp */; };
+		94D96DDF1CE660DD002DCBFF /* Chromosome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D96DDD1CE660DD002DCBFF /* Chromosome.cpp */; };
+		94D96DE21CE66337002DCBFF /* GeneticAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D96DE01CE66337002DCBFF /* GeneticAlgorithm.cpp */; };
+		94D96DE91CE72A0C002DCBFF /* Utility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D96DE71CE72A0C002DCBFF /* Utility.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +29,14 @@
 /* Begin PBXFileReference section */
 		94D96DD01CE65FBE002DCBFF /* GeneticAlgorithm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GeneticAlgorithm; sourceTree = BUILT_PRODUCTS_DIR; };
 		94D96DD31CE65FBE002DCBFF /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		94D96DDA1CE65FF0002DCBFF /* Fitness.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fitness.cpp; sourceTree = "<group>"; };
+		94D96DDB1CE65FF0002DCBFF /* Fitness.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Fitness.hpp; sourceTree = "<group>"; };
+		94D96DDD1CE660DD002DCBFF /* Chromosome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Chromosome.cpp; sourceTree = "<group>"; };
+		94D96DDE1CE660DD002DCBFF /* Chromosome.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Chromosome.hpp; sourceTree = "<group>"; };
+		94D96DE01CE66337002DCBFF /* GeneticAlgorithm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneticAlgorithm.cpp; sourceTree = "<group>"; };
+		94D96DE11CE66337002DCBFF /* GeneticAlgorithm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GeneticAlgorithm.hpp; sourceTree = "<group>"; };
+		94D96DE71CE72A0C002DCBFF /* Utility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utility.cpp; sourceTree = "<group>"; };
+		94D96DE81CE72A0C002DCBFF /* Utility.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Utility.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,8 +70,24 @@
 			isa = PBXGroup;
 			children = (
 				94D96DD31CE65FBE002DCBFF /* main.cpp */,
+				94D96DDE1CE660DD002DCBFF /* Chromosome.hpp */,
+				94D96DDD1CE660DD002DCBFF /* Chromosome.cpp */,
+				94D96DE11CE66337002DCBFF /* GeneticAlgorithm.hpp */,
+				94D96DE01CE66337002DCBFF /* GeneticAlgorithm.cpp */,
+				94D96DE31CE6647B002DCBFF /* Fitness */,
+				94D96DE81CE72A0C002DCBFF /* Utility.hpp */,
+				94D96DE71CE72A0C002DCBFF /* Utility.cpp */,
 			);
 			path = GeneticAlgorithm;
+			sourceTree = "<group>";
+		};
+		94D96DE31CE6647B002DCBFF /* Fitness */ = {
+			isa = PBXGroup;
+			children = (
+				94D96DDB1CE65FF0002DCBFF /* Fitness.hpp */,
+				94D96DDA1CE65FF0002DCBFF /* Fitness.cpp */,
+			);
+			name = Fitness;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,7 +146,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94D96DDC1CE65FF0002DCBFF /* Fitness.cpp in Sources */,
 				94D96DD41CE65FBE002DCBFF /* main.cpp in Sources */,
+				94D96DE91CE72A0C002DCBFF /* Utility.cpp in Sources */,
+				94D96DDF1CE660DD002DCBFF /* Chromosome.cpp in Sources */,
+				94D96DE21CE66337002DCBFF /* GeneticAlgorithm.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
