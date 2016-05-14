@@ -60,6 +60,8 @@ public:
     
     std::string Representation(const std::string& representation) const;
     
+    friend std::ostream& operator<<(std::ostream& out, const Chromosome& chromosome);
+    
 private:
         
     elements m_interpretations;

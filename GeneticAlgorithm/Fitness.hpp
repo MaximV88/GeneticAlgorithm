@@ -11,21 +11,25 @@
 #include <stdlib.h>
 #include <vector>
 #include <string>
+#include <list>
 class Chromosome;
 
 class Fitness {
 public:
 
+    enum class Type {
+        kEditDistance
+    };
+    
+    static Fitness* CreateFitness(const std::string& query, Fitness::Type type);
+    
     Fitness(const std::string& query);
     
-    /**
-     * Works by estimating edit distance between two strings.
-     */
     size_t Score(const Chromosome& chromosome) const;
     
-    size_t OptimalScore() const;
+    virtual size_t OptimalScore() const = 0;
     
-private:
+protected:
     
     enum class Operation {
         kAddition,
@@ -35,17 +39,21 @@ private:
         kNone
     };
     
-    size_t m_optimal_score;
-    
-    void Interpret(const std::string& query);
-    
-    size_t EditDistance(const std::string& s1, const std::string& s2) const;
-    
-    Operation ParseOperation(char operation) const;
+    virtual size_t ResolveScore(const std::list<std::string>& estimated_results) const = 0;
     
     std::vector<Operation> m_operations;
     std::vector<std::string> m_parameters;
+    
+    virtual const std::string& GetResult() const;
+    
+    void Interpret(const std::string& query);
+        
+    Operation ParseOperation(char operation) const;
+    
+private:
+    
     std::string m_result;
+
     
 };
 

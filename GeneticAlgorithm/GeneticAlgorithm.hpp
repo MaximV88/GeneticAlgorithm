@@ -12,9 +12,7 @@
 #include <string>
 #include <vector>
 #include "Chromosome.hpp"
-class Fitness;
-class Chromosome;
-
+#include "Fitness.hpp"
 
 class GeneticAlgorithm {
 public:
@@ -39,16 +37,22 @@ public:
      *
      */
     GeneticAlgorithm(size_t population_size,
-                     const std::string& alphabet,
                      float crossover_probability = 1,
                      float mutation_probability = 0.1);
     
-    Chromosome FindSolution(const Fitness& fitness);
+    /**
+     * Finds the best solution to the query at the given number of generations.
+     *
+     * @param query         The query string.
+     * @param generations   Number of generations to perform.
+     */
+    Chromosome FindSolution(const std::string& query, Fitness::Type type, size_t generations = 0);
     
 private:
     
     std::vector<scored_chromosome> m_chromosomes;
     
+    size_t m_population_size;
     float m_crossover_probability;
     float m_mutation_probability;
     

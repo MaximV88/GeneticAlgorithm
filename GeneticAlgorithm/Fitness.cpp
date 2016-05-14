@@ -7,47 +7,20 @@
 //
 
 #include "Fitness.hpp"
+#include "EditDistanceFitness.hpp"
 #include "Chromosome.hpp"
-#define MATCH_PRICE 2
+
+Fitness* Fitness::CreateFitness(const std::string& query, Fitness::Type type) {
+    
+    switch (type) {
+        case Type::kEditDistance: return new EditDistanceFitness(query);
+    }
+}
 
 Fitness::Fitness(const std::string& query) {
     
     //Populate the parameters and result strings
     Interpret(query);
-}
-
-size_t Fitness::Score(const Chromosome &chromosome) const {
-    
-    //First find the result using the chromosome's interpretation of the string
-    size_t total_value = 0;
-    size_t operation_index = 0;
-    for (std::vector<std::string>::const_iterator begin = m_parameters.begin(), end = m_parameters.end() ;
-         begin != end ;
-         begin ++) {
-    
-        //Manual score filtration using logic
-        if (chromosome.Value(begin->at(0)) == 0) throw std::runtime_error("Chromosome contains illigal numbers placement");
-        
-        switch (m_operations.at(operation_index++)) {
-            case Operation::kMultiplication:    total_value += chromosome.Decode(*begin) * chromosome.Decode(*++begin); break;
-            case Operation::kDevision:          total_value += chromosome.Decode(*begin) / chromosome.Decode(*++begin); break;
-            case Operation::kSubtraction:       total_value += chromosome.Decode(*begin) - chromosome.Decode(*++begin); break;
-            case Operation::kAddition:          total_value += chromosome.Decode(*begin) + chromosome.Decode(*++begin); break;
-            case Operation::kNone: break;
-        }
-    }
-    
-    //Get result string using the chromosome's interpreration
-    std::list<std::string> estimated_results = chromosome.Encode(total_value);
-    
-    //Compare distance between real result and estimated one - get best value which is lowest distance
-    std::vector<size_t> scores;
-    scores.reserve(estimated_results.size());
-    
-    for (const auto& estimated_result : estimated_results)
-        scores.push_back(EditDistance(estimated_result, m_result));
-    
-    return (m_optimal_score - *std::min_element(scores.begin(), scores.end()));
 }
 
 void Fitness::Interpret(const std::string &query) {
@@ -64,7 +37,6 @@ void Fitness::Interpret(const std::string &query) {
             
             //This is the last part - which is the result
             m_result = std::string(query.begin() + last_paramter_end, query.end());
-            m_optimal_score = m_result.length();
             break;
         }
         else {
@@ -82,6 +54,43 @@ void Fitness::Interpret(const std::string &query) {
     }
 }
 
+size_t Fitness::Score(const Chromosome &chromosome) const {
+    
+    //First find the result using the chromosome's interpretation of the string
+    size_t total_value = 0;
+    size_t operation_index = 0;
+    for (std::vector<std::string>::const_iterator begin = m_parameters.begin(), end = m_parameters.end() ;
+         begin != end ;
+         begin ++) {
+        
+        //Number starting with 0 is illigal
+        if (chromosome.Value(begin->at(0)) == 0)
+            throw std::runtime_error("Chromosome contains illigal numbers placement that results with first character starting at 0");
+        
+        switch (m_operations.at(operation_index++)) {
+            case Operation::kMultiplication:    total_value += chromosome.Decode(*begin) * chromosome.Decode(*++begin); break;
+            case Operation::kDevision: {
+                
+                size_t denominator = chromosome.Decode(*++begin);
+                
+                //Devision by 0 is illigal
+                if (denominator == 0)
+                    throw std::runtime_error("Chromosome contains illigal numbers placement that results in devision by 0");
+                
+                total_value += chromosome.Decode(*begin) / denominator;
+                
+                break;
+            }
+            case Operation::kSubtraction:       total_value += chromosome.Decode(*begin) - chromosome.Decode(*++begin); break;
+            case Operation::kAddition:          total_value += chromosome.Decode(*begin) + chromosome.Decode(*++begin); break;
+            case Operation::kNone: break;
+        }
+    }
+    
+    //Get result string using the chromosome's interpreration
+    return ResolveScore(chromosome.Encode(total_value));
+}
+
 Fitness::Operation Fitness::ParseOperation(char operation) const {
     
     //Match enum according to related operation
@@ -92,28 +101,4 @@ Fitness::Operation Fitness::ParseOperation(char operation) const {
     else                        return Fitness::Operation::kNone;
 }
 
-size_t Fitness::OptimalScore() const { return m_optimal_score; }
-
-size_t Fitness::EditDistance(const std::string& s1, const std::string& s2) const {
-    
-    const std::size_t len1 = s1.size(), len2 = s2.size();
-    std::vector<std::vector<size_t>> d(len1 + 1, std::vector<size_t>(len2 + 1));
-    
-    d[0][0] = 0;
-    for(size_t i = 1; i <= len1; ++i) d[i][0] = i;
-    for(size_t i = 1; i <= len2; ++i) d[0][i] = i;
-    
-    for(size_t i = 1; i <= len1; ++i) {
-        for(size_t j = 1; j <= len2; ++j) {
-            
-            d[i][j] = std::min({
-                d[i - 1][j] + 1,
-                d[i][j - 1] + 1,
-                d[i - 1][j - 1] + (s1[i - 1] == s2[j - 1] ? 0 : 1)
-            });
-    
-        }
-    }
-    
-    return d[len1][len2];
-}
+const std::string& Fitness::GetResult() const { return m_result; }

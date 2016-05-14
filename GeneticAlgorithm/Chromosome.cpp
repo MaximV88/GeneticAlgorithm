@@ -12,6 +12,7 @@
 #include <tgmath.h>
 #include <vector>
 #include <string>
+#include <iostream>
 
 Chromosome Chromosome::Crossover(const Chromosome &first, const Chromosome &second, float point) {
     
@@ -134,6 +135,10 @@ short Chromosome::Value(char letter) const {
     return m_interpretations.find(letter)->second;
 }
 
-std::string Chromosome::Representation(const std::string &representation) const {
-    return "";
+std::ostream& operator<<(std::ostream& out, const Chromosome& chromosome) {
+
+    for (const auto& interpretation : chromosome.m_interpretations)
+        out << interpretation.first << "=" << interpretation.second << "\t";
+
+    return out;
 }
