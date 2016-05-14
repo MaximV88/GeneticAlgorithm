@@ -13,6 +13,7 @@
 		94D96DE21CE66337002DCBFF /* GeneticAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D96DE01CE66337002DCBFF /* GeneticAlgorithm.cpp */; };
 		94D96DE91CE72A0C002DCBFF /* Utility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D96DE71CE72A0C002DCBFF /* Utility.cpp */; };
 		94D96DEF1CE764CB002DCBFF /* EditDistanceFitness.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D96DED1CE764CB002DCBFF /* EditDistanceFitness.cpp */; };
+		94D96DF21CE77BD7002DCBFF /* ClosenessFitness.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D96DF01CE77BD7002DCBFF /* ClosenessFitness.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +41,8 @@
 		94D96DE81CE72A0C002DCBFF /* Utility.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Utility.hpp; sourceTree = "<group>"; };
 		94D96DED1CE764CB002DCBFF /* EditDistanceFitness.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditDistanceFitness.cpp; sourceTree = "<group>"; };
 		94D96DEE1CE764CB002DCBFF /* EditDistanceFitness.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EditDistanceFitness.hpp; sourceTree = "<group>"; };
+		94D96DF01CE77BD7002DCBFF /* ClosenessFitness.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClosenessFitness.cpp; sourceTree = "<group>"; };
+		94D96DF11CE77BD7002DCBFF /* ClosenessFitness.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ClosenessFitness.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +94,8 @@
 				94D96DDA1CE65FF0002DCBFF /* Fitness.cpp */,
 				94D96DEE1CE764CB002DCBFF /* EditDistanceFitness.hpp */,
 				94D96DED1CE764CB002DCBFF /* EditDistanceFitness.cpp */,
+				94D96DF11CE77BD7002DCBFF /* ClosenessFitness.hpp */,
+				94D96DF01CE77BD7002DCBFF /* ClosenessFitness.cpp */,
 			);
 			name = Fitness;
 			sourceTree = "<group>";
@@ -157,6 +162,7 @@
 				94D96DDF1CE660DD002DCBFF /* Chromosome.cpp in Sources */,
 				94D96DE21CE66337002DCBFF /* GeneticAlgorithm.cpp in Sources */,
 				94D96DEF1CE764CB002DCBFF /* EditDistanceFitness.cpp in Sources */,
+				94D96DF21CE77BD7002DCBFF /* ClosenessFitness.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

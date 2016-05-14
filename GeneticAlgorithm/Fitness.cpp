@@ -8,12 +8,14 @@
 
 #include "Fitness.hpp"
 #include "EditDistanceFitness.hpp"
+#include "ClosenessFitness.hpp"
 #include "Chromosome.hpp"
 
 Fitness* Fitness::CreateFitness(const std::string& query, Fitness::Type type) {
     
     switch (type) {
-        case Type::kEditDistance: return new EditDistanceFitness(query);
+        case Type::kEditDistance:   return new EditDistanceFitness(query);
+        case Type::kCloseness:      return new ClosenessFitness(query);
     }
 }
 
@@ -57,32 +59,37 @@ void Fitness::Interpret(const std::string &query) {
 size_t Fitness::Score(const Chromosome &chromosome) const {
     
     //First find the result using the chromosome's interpretation of the string
-    size_t total_value = 0;
+    int total_value = 0;
     size_t operation_index = 0;
     for (std::vector<std::string>::const_iterator begin = m_parameters.begin(), end = m_parameters.end() ;
          begin != end ;
          begin ++) {
         
         //Number starting with 0 is illigal
-        if (chromosome.Value(begin->at(0)) == 0)
+        auto current_parameter = begin;
+        auto next_parameter = ++begin;
+        
+        if (((current_parameter->length() > 1) && (chromosome.Value(current_parameter->at(0)) == 0)) ||
+            ((next_parameter->length() > 1) && (chromosome.Value(next_parameter->at(0)) == 0)))
             throw std::runtime_error("Chromosome contains illigal numbers placement that results with first character starting at 0");
         
+        
         switch (m_operations.at(operation_index++)) {
-            case Operation::kMultiplication:    total_value += chromosome.Decode(*begin) * chromosome.Decode(*++begin); break;
+            case Operation::kMultiplication:    total_value += chromosome.Decode(*current_parameter) * chromosome.Decode(*next_parameter); break;
             case Operation::kDevision: {
                 
-                size_t denominator = chromosome.Decode(*++begin);
+                size_t denominator = chromosome.Decode(*next_parameter);
                 
                 //Devision by 0 is illigal
                 if (denominator == 0)
                     throw std::runtime_error("Chromosome contains illigal numbers placement that results in devision by 0");
                 
-                total_value += chromosome.Decode(*begin) / denominator;
+                total_value += chromosome.Decode(*current_parameter) / denominator;
                 
                 break;
             }
-            case Operation::kSubtraction:       total_value += chromosome.Decode(*begin) - chromosome.Decode(*++begin); break;
-            case Operation::kAddition:          total_value += chromosome.Decode(*begin) + chromosome.Decode(*++begin); break;
+            case Operation::kSubtraction:       total_value += chromosome.Decode(*current_parameter) - chromosome.Decode(*next_parameter); break;
+            case Operation::kAddition:          total_value += chromosome.Decode(*current_parameter) + chromosome.Decode(*next_parameter); break;
             case Operation::kNone: break;
         }
     }
@@ -95,7 +102,7 @@ size_t Fitness::Score(const Chromosome &chromosome) const {
     scores.reserve(estimated_results.size());
     
     for (const auto& estimated_result : estimated_results)
-        scores.push_back(ResolveScore(estimated_result, m_result));
+        scores.push_back(ResolveScore(estimated_result, m_result, chromosome));
         
     return static_cast<int>(*std::max_element(scores.begin(), scores.end()));
 }

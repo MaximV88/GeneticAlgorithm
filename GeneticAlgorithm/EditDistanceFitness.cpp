@@ -13,7 +13,9 @@ EditDistanceFitness::EditDistanceFitness(const std::string& query) :
 Fitness(query)
 { }
 
-size_t EditDistanceFitness::ResolveScore(const std::string& estimated_result, const std::string& real_result) const {
+size_t EditDistanceFitness::ResolveScore(const std::string& estimated_result,
+                                         const std::string& real_result,
+                                         const Chromosome& chromosome) const {
     
     if (estimated_result.length() != real_result.length()) return 0;
     
@@ -43,3 +45,5 @@ size_t EditDistanceFitness::ResolveScore(const std::string& estimated_result, co
 size_t EditDistanceFitness::ResolveOptimalScore(const std::string &result) const {
     return result.length();
 }
+
+bool EditDistanceFitness::Descending() const { return false; }

@@ -35,14 +35,33 @@ size_t FindValidScoreOrReplace(const Fitness& fitness, Chromosome& chromosome, c
     return score;
 }
 
+Chromosome* UpdateChromosomeScores(std::vector<GeneticAlgorithm::scored_chromosome>& chromosomes,
+                                   const Fitness& fitness,
+                                   const std::string alphabet) {
+    
+    //Update Chromosomes so they contain valid chromosomes with scores
+    for (auto begin = chromosomes.begin(), end = chromosomes.end() ;
+         begin != end ;
+         begin++) {
+        
+        begin->second = FindValidScoreOrReplace(fitness, begin->first, alphabet);
+        
+        //Check for valid results
+        if (begin->second == fitness.OptimalScore())
+            return &begin->first;
+    }
+    
+    //Didnt find answer
+    return NULL;
+}
+
 GeneticAlgorithm::GeneticAlgorithm(size_t population_size,
                                    float crossover_probability,
                                    float mutation_probability) :
 m_population_size(population_size),
 m_crossover_probability(crossover_probability),
-m_mutation_probability(mutation_probability) {
-    
-}
+m_mutation_probability(mutation_probability)
+{ }
 
 Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Type type, size_t generations) {
 
@@ -64,26 +83,22 @@ Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Typ
     
     while (true) {
         
-        //Update Chromosomes so they contain valid chromosomes with scores
-        for (std::vector<scored_chromosome>::iterator begin = m_chromosomes.begin(), end = m_chromosomes.end() ;
-             begin != end ;
-             begin++) {
+        
+        Chromosome* result = UpdateChromosomeScores(m_chromosomes, *fitness, m_alphabet);
+        
+        //In case a result was found return it
+        if (result) {
             
-            begin->second = FindValidScoreOrReplace(*fitness, begin->first, m_alphabet);
-            
-            //Check for valid results
-            if (begin->second == fitness->OptimalScore()) {
-             
-                std::cout << "Generations: " << counted_generations << '\n';
-                return begin->first;
-            }
-            
+            std::cout << "Generations: " << counted_generations << '\n';
+            return *result;
         }
 
+        //Sort so that the best chromosomes are the first
         std::sort(m_chromosomes.begin(), m_chromosomes.end(), [&](scored_chromosome& lhs, scored_chromosome& rhs){
             
-            //The order should be descending
-            return lhs.second > rhs.second;
+            return fitness->Descending()
+            ? lhs.second < rhs.second
+            : lhs.second > rhs.second;
         });
         
         //Reached limit of generations
@@ -100,10 +115,13 @@ Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Typ
             
             //Mutate with a probability and take only better options
             Chromosome mutated = Chromosome::Mutate(begin->first, m_mutation_probability);
-            size_t mutated_score;
             try {
                 
-                if ((mutated_score = fitness->Score(mutated)) > begin->second) {
+                size_t mutated_score = fitness->Score(mutated);
+
+                if (fitness->Descending()
+                    ? mutated_score < begin->second
+                    : mutated_score > begin->second) {
                     
                     begin->first = mutated;
                     begin->second = mutated_score;
@@ -125,17 +143,20 @@ Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Typ
                 
                 Chromosome crossover = Chromosome::Crossover(first_chromosome->first, second_chromosome->first, 0.5);
                 
-                size_t crossover_score = 0;
                 try {
                     
-                    if ((crossover_score = fitness->Score(crossover)) > begin->second) {
+                    size_t crossover_score = fitness->Score(crossover);
+
+                    if (fitness->Descending()
+                        ? crossover_score < begin->second
+                        : crossover_score > begin->second) {
+                    
                         begin->first = crossover;
                         begin->second = crossover_score;
                     }
                 }
                 catch (...) { }
             }
-            
         }
     }
 }

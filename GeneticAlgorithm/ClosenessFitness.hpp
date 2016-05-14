@@ -1,19 +1,16 @@
 //
-//  EditDistanceFitness.hpp
+//  ClosenessFitness.hpp
 //  GeneticAlgorithm
 //
 //  Created by Maxim Vainshtein on 14/05/2016.
 //  Copyright © 2016 Maxim Vainshtein. All rights reserved.
 //
 
-#ifndef EditDistanceFitness_hpp
-#define EditDistanceFitness_hpp
+#ifndef ClosenessFitness_hpp
+#define ClosenessFitness_hpp
 #include "Fitness.hpp"
 
-/**
- * Works by estimating edit distance between two strings.
- */
-class EditDistanceFitness : public Fitness {
+class ClosenessFitness : public Fitness {
 public:
     
     /**
@@ -21,7 +18,7 @@ public:
      *
      * @param query     The query that the fitness is based on.
      */
-    EditDistanceFitness(const std::string& query);
+    ClosenessFitness(const std::string& query);
     
     /**
      * Returns true if the scores are based on descending or ascending order.
@@ -30,9 +27,8 @@ public:
      */
     virtual bool Descending() const;
     
-
 protected:
-
+    
     /**
      * Resolves the score between two strings. The higher the score, the better then match.
      *
@@ -50,6 +46,8 @@ protected:
      * @return              The best score.
      */
     virtual size_t ResolveOptimalScore(const std::string& result) const;
+
     
 };
-#endif /* EditDistanceFitness_hpp */
+
+#endif /* ClosenessFitness_hpp */
