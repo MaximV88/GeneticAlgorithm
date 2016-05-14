@@ -10,21 +10,33 @@
 #define EditDistanceFitness_hpp
 #include "Fitness.hpp"
 
+/**
+ * Works by estimating edit distance between two strings.
+ */
 class EditDistanceFitness : public Fitness {
 public:
     
     EditDistanceFitness(const std::string& query);
     
-    /**
-     * Works by estimating edit distance between two strings.
-     */
-    virtual size_t ResolveScore(const std::list<std::string>& estimated_results) const;
-  
-    virtual size_t OptimalScore() const;
 
 protected:
+
+    /**
+     * Resolves the score between two strings. The higher the score, the better then match.
+     *
+     * @param estimated_result      The result produced by the chromosome.
+     * @param real_result           The real result.
+     * @return                      An estimation on how close the estimated result to the real result.
+     */
+    virtual size_t ResolveScore(const std::string& estimated_result, const std::string& real_result) const;
     
-    size_t EditDistance(const std::string& s1, const std::string& s2) const;
+    /**
+     * Resolves the best possible score for the real result.
+     *
+     * @param result    The final result that the chromosome is to match.
+     * @return          The best score.
+     */
+    virtual size_t ResolveOptimalScore(const std::string& result) const;
     
 };
 #endif /* EditDistanceFitness_hpp */

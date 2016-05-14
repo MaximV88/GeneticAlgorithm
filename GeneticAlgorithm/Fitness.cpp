@@ -46,7 +46,7 @@ void Fitness::Interpret(const std::string &query) {
                                                query.begin() + position));
             
             //Get the operation
-            m_operations.push_back(ParseOperation(*(query.begin() + position)));
+            m_operations.push_back(static_cast<Operation>(*(query.begin() + position)));
             
             //Increment the position so it wont take into account the operator
             last_paramter_end = position + 1;
@@ -88,17 +88,16 @@ size_t Fitness::Score(const Chromosome &chromosome) const {
     }
     
     //Get result string using the chromosome's interpreration
-    return ResolveScore(chromosome.Encode(total_value));
-}
-
-Fitness::Operation Fitness::ParseOperation(char operation) const {
+    std::list<std::string> estimated_results = chromosome.Encode(total_value);
     
-    //Match enum according to related operation
-    if (operation == '+')       return Fitness::Operation::kAddition;
-    else if (operation == '-')  return Fitness::Operation::kSubtraction;
-    else if (operation == '/')  return Fitness::Operation::kDevision;
-    else if (operation == '*')  return Fitness::Operation::kMultiplication;
-    else                        return Fitness::Operation::kNone;
+    //Compare distance between real result and estimated one - get best value which is lowest distance
+    std::vector<size_t> scores;
+    scores.reserve(estimated_results.size());
+    
+    for (const auto& estimated_result : estimated_results)
+        scores.push_back(ResolveScore(estimated_result, m_result));
+        
+    return static_cast<int>(OptimalScore() - *std::min_element(scores.begin(), scores.end()));
 }
 
-const std::string& Fitness::GetResult() const { return m_result; }
+size_t Fitness::OptimalScore() const { return ResolveOptimalScore(m_result); }

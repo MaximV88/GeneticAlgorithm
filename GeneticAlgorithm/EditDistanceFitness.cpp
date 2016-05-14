@@ -13,29 +13,9 @@ EditDistanceFitness::EditDistanceFitness(const std::string& query) :
 Fitness(query)
 { }
 
-size_t EditDistanceFitness::ResolveScore(const std::list<std::string> &estimated_results) const {
+size_t EditDistanceFitness::ResolveScore(const std::string& estimated_result, const std::string& real_result) const {
     
-    //Compare distance between real result and estimated one - get best value which is lowest distance
-    std::vector<size_t> scores;
-    scores.reserve(estimated_results.size());
-    
-    for (const auto& estimated_result : estimated_results)
-        scores.push_back(EditDistance(estimated_result, GetResult()));
-    
-    int result = static_cast<int>(OptimalScore() - *std::min_element(scores.begin(), scores.end()));
-    
-    return result;
-}
-
-size_t EditDistanceFitness::OptimalScore() const {
-    
-    //Save for later comparisons with edit distance
-    return GetResult().length();
-}
-
-size_t EditDistanceFitness::EditDistance(const std::string& s1, const std::string& s2) const {
-    
-    const std::size_t len1 = s1.size(), len2 = s2.size();
+    const std::size_t len1 = estimated_result.size(), len2 = real_result.size();
     std::vector<std::vector<size_t>> d(len1 + 1, std::vector<size_t>(len2 + 1));
     
     d[0][0] = 0;
@@ -48,11 +28,16 @@ size_t EditDistanceFitness::EditDistance(const std::string& s1, const std::strin
             d[i][j] = std::min({
                 d[i - 1][j] + 1,
                 d[i][j - 1] + 1,
-                d[i - 1][j - 1] + (s1[i - 1] == s2[j - 1] ? 0 : 1)
+                d[i - 1][j - 1] + (estimated_result[i - 1] == real_result[j - 1] ? 0 : 1)
             });
             
         }
     }
     
     return d[len1][len2];
+
+}
+
+size_t EditDistanceFitness::ResolveOptimalScore(const std::string &result) const {
+    return result.length();
 }

@@ -64,13 +64,6 @@ Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Typ
     
     while (true) {
         
-        //Reached limit of generations
-        if (counted_generations++ == generations) {
-            
-            std::cout << "Generations: " << counted_generations << '\n';
-            return m_chromosomes.begin()->first;
-        }
-
         //Update Chromosomes so they contain valid chromosomes with scores
         for (std::vector<scored_chromosome>::iterator begin = m_chromosomes.begin(), end = m_chromosomes.end() ;
              begin != end ;
@@ -93,6 +86,13 @@ Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Typ
             return lhs.second > rhs.second;
         });
         
+        //Reached limit of generations
+        if (counted_generations++ == generations) {
+            
+            std::cout << "Generations: " << counted_generations << '\n';
+            return m_chromosomes.begin()->first;
+        }
+        
         //Perform changes to the chromosomes themselfs
         for (std::vector<scored_chromosome>::iterator begin = m_chromosomes.begin(), end = m_chromosomes.end() ;
              begin != end ;
@@ -114,11 +114,13 @@ Chromosome GeneticAlgorithm::FindSolution(const std::string& query, Fitness::Typ
             //Crossover with a probability only if its beneficial
             if (utility::ThrowDice(m_crossover_probability)) {
                 
-                auto first_chromosome = m_chromosomes.begin();
-                auto second_chromosome = first_chromosome + arc4random() % static_cast<int>(std::round(m_chromosomes.size() / 5.0f));
+                auto first_chromosome = begin;
+                auto second_chromosome = m_chromosomes.begin() + arc4random() % static_cast<int>(std::round(m_chromosomes.size() / 5.0f));
                 
                 //Avoid crossing over with self
                 if (first_chromosome == second_chromosome) continue;
+                
+                //Perform flips to chromosomes in order to randomize parts that are exchanged to avoid local maximum
                 if (utility::ThrowDice(0.5)) { auto temp = first_chromosome; first_chromosome = second_chromosome; second_chromosome = temp; }
                 
                 Chromosome crossover = Chromosome::Crossover(first_chromosome->first, second_chromosome->first, 0.5);
