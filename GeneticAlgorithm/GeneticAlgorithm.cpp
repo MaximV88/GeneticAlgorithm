@@ -199,7 +199,7 @@ Chromosome GeneticAlgorithm::Impl::FindSolution(const std::string& query, Fitnes
             if (utility::ThrowDice(m_crossover_probability)) {
                 
                 auto first_chromosome = begin;
-                auto second_chromosome = m_chromosomes.begin() + arc4random() % static_cast<int>(std::round(m_chromosomes.size() / 5.0f));
+                auto second_chromosome = m_chromosomes.begin() + static_cast<int>(utility::RandomProbability() * std::round(m_chromosomes.size() / 5.0f));
                 
                 //Avoid crossing over with self
                 if (first_chromosome == second_chromosome) continue;
