@@ -10,6 +10,7 @@
 #include "EditDistanceFitness.hpp"
 #include "ClosenessFitness.hpp"
 #include "Chromosome.hpp"
+#include <algorithm>
 
 /**
  * Implementation.

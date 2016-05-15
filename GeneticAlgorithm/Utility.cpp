@@ -9,6 +9,7 @@
 #include "Utility.hpp"
 #include <iostream>
 #include <ctime>
+#include <algorithm>
 
 using namespace utility;
 

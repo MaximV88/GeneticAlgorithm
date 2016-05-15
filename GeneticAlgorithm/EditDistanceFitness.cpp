@@ -8,6 +8,7 @@
 
 #include "EditDistanceFitness.hpp"
 #include "Chromosome.hpp"
+#include <algorithm>
 
 EditDistanceFitness::EditDistanceFitness(const std::string& query) :
 Fitness(query)

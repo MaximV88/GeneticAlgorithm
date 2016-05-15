@@ -12,6 +12,8 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <algorithm>
+#include <stdlib.h>
 
 size_t FindValidScoreOrReplace(const Fitness& fitness, Chromosome& chromosome, const std::string& alphabet) {
     
